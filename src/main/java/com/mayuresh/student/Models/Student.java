@@ -1,8 +1,12 @@
 package com.mayuresh.student.Models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.springframework.lang.NonNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Student {
@@ -28,12 +32,14 @@ public class Student {
     @Column(name = "mob_no")
     private String mobNo;
 
-
-//    @NotBlank(message = "City is mandatory")
     private String city;
 
-//    @NotBlank(message = "City is mandatory")
     private String state;
+
+    @OneToMany(mappedBy = "student",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    List<Card> cards = new ArrayList<>();
+
 
     public Student() {
     }
@@ -46,6 +52,14 @@ public class Student {
         this.mobNo = mobNo;
         this.city = city;
         this.state = state;
+    }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
     }
 
     public int getId() {

@@ -1,8 +1,11 @@
 package com.mayuresh.student.Controller;
 
+import com.mayuresh.student.Exception.StudentNotFoundException;
 import com.mayuresh.student.Models.Student;
 import com.mayuresh.student.Service.StudentService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,7 @@ import java.util.List;
 @RequestMapping("/student")
 public class StudentController {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     StudentService studentService;
 
@@ -27,6 +31,7 @@ public class StudentController {
             newStudent = studentService.addStudent(student);
         }
         catch (Exception e){
+            logger.info("exception in addStudent");
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
 
@@ -36,8 +41,17 @@ public class StudentController {
 
     // GET STUDENT BY ID
     @GetMapping("/get/{id}")
-    public Student getStudent(@PathVariable int id){
-        return studentService.getStudent(id);
+    public ResponseEntity<?> getStudent(@PathVariable int id) throws Exception {
+        try {
+            Student student = studentService.getStudent(id);
+            return ResponseEntity.ok(student);
+        } catch (StudentNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Student not found with idd: " + id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while processing the request");
+        }
     }
 
     /*
@@ -74,5 +88,34 @@ public class StudentController {
     public String deleteStudent(@PathVariable int id) {
         return studentService.deleteStudent(id);
     }
+
+    @GetMapping("/getAllByEmail/{email}")
+    public List<Student> getAllByEmail1(@PathVariable String email){
+        return studentService.getAllByEmail(email);
+    }
+
+    @GetMapping("/getAllByEmail")
+    public List<Student> getAllByEmail(@RequestHeader String email){
+        return studentService.getAllByEmail(email);
+    }
+
+
+//    @PostMapping("/add")
+//    public ResponseEntity<MyInvoice> addInvoice(@RequestParam(value = "file", required = false) MultipartFile image,
+//                                                @RequestParam("data") String myinvoice) {
+//        ResponseEntity<MyInvoice> responseEntity ;
+//        try {
+//            MyInvoice genericInput = new ObjectMapper().readValue(myinvoice, new TypeReference<MyInvoice>() {
+//            });
+//            System.out.println("controller called");
+//            MyInvoice invoiceDo = myInvoiceService.addInvoice(genericInput, image);
+//            responseEntity = new ResponseEntity<MyInvoice>(invoiceDo, HttpStatus.ACCEPTED);
+//        } catch (Exception se) {
+//            System.out.println(se);
+//            responseEntity = new ResponseEntity<MyInvoice>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        return responseEntity;
+//    }
+
 
 }
