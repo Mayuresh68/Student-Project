@@ -36,9 +36,38 @@ public class Student {
 
     private String state;
 
+    private String photoPath;
+
+    private String photoName;
+
     @OneToMany(mappedBy = "student",cascade = CascadeType.ALL)
     @JsonManagedReference
     List<Card> cards = new ArrayList<>();
+
+
+    //Many To Many Example (owning side)
+    @ManyToMany
+    @JoinTable(name = "student_teacher",
+            joinColumns = @JoinColumn(name = "student_id"),
+     inverseJoinColumns = @JoinColumn(name = "teacher_id"))
+    List<Teacher> teachers = new ArrayList<>();
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
+
+    public String getPhotoName() {
+        return photoName;
+    }
+
+    public void setPhotoName(String photoName) {
+        this.photoName = photoName;
+    }
+
+
 
 
     public Student() {

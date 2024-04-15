@@ -12,13 +12,13 @@ public class Employee {
 
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "department_id")
     @JsonBackReference
-    Department department;
+    private Department department;
 
-    @OneToOne(mappedBy = "employee",cascade = CascadeType.ALL)
-    Salaries salaries;
+//    @OneToOne(mappedBy = "employee",cascade = CascadeType.ALL)
+//    Salaries salaries;
 
     public Integer getId() {
         return id;

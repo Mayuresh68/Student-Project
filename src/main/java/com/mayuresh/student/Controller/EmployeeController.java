@@ -17,6 +17,7 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/emp")
@@ -28,6 +29,11 @@ public class EmployeeController {
 
     @Autowired
     EncryptionDecryption encryptionDecryption;
+
+    @GetMapping("get_emp")
+    public String get_emp(){
+        return "Hello Emp...!!";
+    }
     @PostMapping("/add")
     public ResponseEntity addEmployee(@Valid @RequestBody Employee employee){
         Employee newEmp;
@@ -53,6 +59,11 @@ public class EmployeeController {
     @GetMapping("/decrypt/{enc}")
     public String getdecrypt(@PathVariable String enc){
         return encryptionDecryption.decrypt(enc);
+    }
+
+    @GetMapping("/getall")
+    public List<Employee> getall(){
+        return employeeService.getall();
     }
 
 }
